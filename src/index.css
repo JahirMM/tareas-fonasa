@@ -37,3 +37,9 @@ body {
   background: #2a2a3a;
   border-radius: 3px;
 }
+
+input[type="date"] {
+  width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
+}
