@@ -17,6 +17,8 @@ export const TasksList = ({ tareas, proyectos }: TasksListProps) => {
   const [filtroDesde, setFiltroDesde] = useState('')
   const [filtroHasta, setFiltroHasta] = useState('')
   const [copied, setCopied] = useState(false)
+  const [pagina, setPagina] = useState(1)
+  const ITEMS_POR_PAGINA = 8
 
   const tareasFiltradas = useMemo(() => {
     return tareas.filter((tarea) => {
@@ -27,10 +29,17 @@ export const TasksList = ({ tareas, proyectos }: TasksListProps) => {
     })
   }, [tareas, filtroProyecto, filtroDesde, filtroHasta])
 
+  const totalPaginas = Math.ceil(tareasFiltradas.length / ITEMS_POR_PAGINA)
+  const tareasPaginadas = tareasFiltradas.slice(
+    (pagina - 1) * ITEMS_POR_PAGINA,
+    pagina * ITEMS_POR_PAGINA
+  )
+
   const limpiarFiltros = () => {
     setFiltroProyecto('')
     setFiltroDesde('')
     setFiltroHasta('')
+    setPagina(1)
   }
 
   const copyAsMarkdown = () => {
@@ -121,8 +130,9 @@ export const TasksList = ({ tareas, proyectos }: TasksListProps) => {
           <p className="text-text-dim">No hay tareas registradas.</p>
         </div>
       ) : (
-        <div className="grid gap-4">
-          {tareasFiltradas.map((tarea) => (
+        <>
+          <div className="grid gap-4">
+            {tareasPaginadas.map((tarea) => (
             <div key={tarea.id} className="bg-card rounded-3xl border border-border p-6 hover:border-primary/30 transition-all group">
               <div className="flex items-start justify-between gap-4">
                 <div className="flex-1 min-w-0">
@@ -161,7 +171,43 @@ export const TasksList = ({ tareas, proyectos }: TasksListProps) => {
               )}
             </div>
           ))}
-        </div>
+          </div>
+
+          {/* Paginación */}
+          {totalPaginas > 1 && (
+            <div className="flex items-center justify-center gap-2 pt-4">
+              <button
+                onClick={() => setPagina((p) => Math.max(1, p - 1))}
+                disabled={pagina === 1}
+                className="px-4 py-2 rounded-full text-sm border border-border text-text-secondary hover:border-primary/30 hover:text-primary-light transition-all cursor-pointer disabled:opacity-30 disabled:cursor-not-allowed"
+              >
+                ← Anterior
+              </button>
+              <div className="flex items-center gap-1">
+                {Array.from({ length: totalPaginas }, (_, i) => i + 1).map((num) => (
+                  <button
+                    key={num}
+                    onClick={() => setPagina(num)}
+                    className={`w-9 h-9 rounded-full text-sm font-medium transition-all cursor-pointer ${
+                      num === pagina
+                        ? 'bg-primary text-white'
+                        : 'text-text-secondary hover:bg-surface-hover'
+                    }`}
+                  >
+                    {num}
+                  </button>
+                ))}
+              </div>
+              <button
+                onClick={() => setPagina((p) => Math.min(totalPaginas, p + 1))}
+                disabled={pagina === totalPaginas}
+                className="px-4 py-2 rounded-full text-sm border border-border text-text-secondary hover:border-primary/30 hover:text-primary-light transition-all cursor-pointer disabled:opacity-30 disabled:cursor-not-allowed"
+              >
+                Siguiente →
+              </button>
+            </div>
+          )}
+        </>
       )}
     </div>
   )

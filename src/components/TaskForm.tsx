@@ -1,5 +1,6 @@
 import { useState, useEffect, type FormEvent, type ChangeEvent } from 'react'
 import { GOOGLE_SCRIPT_URL } from '../config'
+import { getCache, setCache } from '../hooks/useCache'
 
 export interface Tarea {
   id: string
@@ -60,20 +61,35 @@ export const TaskForm = ({ onTaskAdded, onClose }: TaskFormProps) => {
   const [errors, setErrors] = useState<Partial<Record<string, string>>>({})
 
   useEffect(() => {
-    fetch(`${GOOGLE_SCRIPT_URL}?action=estados`, { redirect: 'follow' })
-      .then((res) => res.json())
-      .then(setEstados)
-      .catch(console.error)
+    const cachedEstados = getCache<Estado[]>('cache_estados')
+    if (cachedEstados) {
+      setEstados(cachedEstados)
+    } else {
+      fetch(`${GOOGLE_SCRIPT_URL}?action=estados`, { redirect: 'follow' })
+        .then((res) => res.json())
+        .then((data) => { setEstados(data); setCache('cache_estados', data) })
+        .catch(console.error)
+    }
 
-    fetch(`${GOOGLE_SCRIPT_URL}?action=proyectos`, { redirect: 'follow' })
-      .then((res) => res.json())
-      .then(setProyectos)
-      .catch(console.error)
+    const cachedProyectos = getCache<Proyecto[]>('cache_proyectos')
+    if (cachedProyectos) {
+      setProyectos(cachedProyectos)
+    } else {
+      fetch(`${GOOGLE_SCRIPT_URL}?action=proyectos`, { redirect: 'follow' })
+        .then((res) => res.json())
+        .then((data) => { setProyectos(data); setCache('cache_proyectos', data) })
+        .catch(console.error)
+    }
 
-    fetch(`${GOOGLE_SCRIPT_URL}?action=repositorios`, { redirect: 'follow' })
-      .then((res) => res.json())
-      .then(setRepositorios)
-      .catch(console.error)
+    const cachedRepos = getCache<Repositorio[]>('cache_repositorios')
+    if (cachedRepos) {
+      setRepositorios(cachedRepos)
+    } else {
+      fetch(`${GOOGLE_SCRIPT_URL}?action=repositorios`, { redirect: 'follow' })
+        .then((res) => res.json())
+        .then((data) => { setRepositorios(data); setCache('cache_repositorios', data) })
+        .catch(console.error)
+    }
   }, [])
 
   const validateField = (name: string, value: string | string[]): string => {

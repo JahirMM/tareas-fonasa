@@ -4,10 +4,13 @@ import { TaskForm, type Tarea } from './components/TaskForm'
 import { TasksList } from './components/TasksList'
 import { Modal } from './components/Modal'
 import { GOOGLE_SCRIPT_URL } from './config'
+import { getCache, setCache } from './hooks/useCache'
 
 function App() {
   const [tareas, setTareas] = useState<Tarea[]>([])
-  const [proyectos, setProyectos] = useState<string[]>([])
+  const [proyectos, setProyectos] = useState<string[]>(() => {
+    return getCache<string[]>('cache_proyectos_nombres') || []
+  })
   const [loading, setLoading] = useState(true)
   const [modalOpen, setModalOpen] = useState(false)
 
@@ -25,7 +28,11 @@ function App() {
 
     fetch(`${GOOGLE_SCRIPT_URL}?action=proyectos`, { redirect: 'follow' })
       .then((res) => res.json())
-      .then((data) => setProyectos(data.map((p: { nombre: string }) => p.nombre)))
+      .then((data) => {
+        const nombres = data.map((p: { nombre: string }) => p.nombre)
+        setProyectos(nombres)
+        setCache('cache_proyectos_nombres', nombres)
+      })
       .catch(console.error)
   }, [])
 
