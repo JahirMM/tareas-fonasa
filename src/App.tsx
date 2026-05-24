@@ -2,7 +2,6 @@ import { useState, useEffect } from 'react'
 import './App.css'
 import { TaskForm, type Tarea } from './components/TaskForm'
 import { TasksList } from './components/TasksList'
-import { Header } from './components/Header'
 import { Modal } from './components/Modal'
 import { GOOGLE_SCRIPT_URL } from './config'
 
@@ -41,14 +40,63 @@ function App() {
     })
   }
 
-  return (
-    <div className="min-h-screen bg-gray-100">
-      <Header onCreateTask={() => setModalOpen(true)} />
+  const totalTareas = tareas.length
+  // const enCurso = tareas.filter((t) => t.estado === 'En curso').length
+  // const finalizadas = tareas.filter((t) => t.estado === 'Finalizado').length
 
-      <main className="max-w-6xl mx-auto px-4 py-6">
+  return (
+    <div className="min-h-screen bg-bg">
+      {/* Hero / Header */}
+      <div className="relative overflow-hidden">
+        <div className="absolute inset-0 bg-linear-to-b from-primary/8 to-transparent pointer-events-none" />
+        <div className="max-w-7xl mx-auto px-6 pt-8 pb-12">
+          {/* Nav */}
+          <nav className="flex items-center justify-end mb-16">
+            <button
+              onClick={() => setModalOpen(true)}
+              className="bg-primary text-white px-5 py-2.5 rounded-full text-sm font-semibold hover:bg-primary-dark transition-all cursor-pointer"
+            >
+              + Nueva Tarea
+            </button>
+          </nav>
+
+          {/* Hero text */}
+          <div className="mb-12">
+            <h1 className="text-5xl md:text-7xl font-bold text-text leading-tight tracking-tight">
+              Tareas.<br />
+              <span className="text-primary-light">Fonasa</span>
+            </h1>
+            <p className="text-text-secondary mt-6 text-lg max-w-md">
+              Tareas por dia en fonasa de Jahir
+            </p>
+          </div>
+
+          {/* Stats */}
+          <div className="grid grid-cols-3 gap-6 max-w-lg">
+            <div>
+              <p className="text-4xl font-bold text-text">{totalTareas}</p>
+              <p className="text-text-dim text-sm mt-1">Total tareas</p>
+            </div>
+            {/* <div>
+              <p className="text-4xl font-bold text-warning">{enCurso}</p>
+              <p className="text-text-dim text-sm mt-1">En curso</p>
+            </div> */}
+            {/* <div>
+              <p className="text-4xl font-bold text-accent">{finalizadas}</p>
+              <p className="text-text-dim text-sm mt-1">Finalizadas</p>
+            </div> */}
+          </div>
+        </div>
+      </div>
+
+      {/* Content */}
+      <main className="max-w-7xl mx-auto px-6 pb-16">
         {loading ? (
-          <div className="flex items-center justify-center py-12">
-            <p className="text-gray-500 text-sm">Cargando tareas...</p>
+          <div className="flex items-center justify-center py-24">
+            <div className="flex flex-col items-center gap-4">
+              <div className="w-10 h-10 border-2 border-primary border-t-transparent rounded-full animate-spin" />
+              <p className="text-text-dim text-sm">Cargando tareas...</p>
+            </div>
           </div>
         ) : (
           <TasksList tareas={tareas} proyectos={proyectos} />

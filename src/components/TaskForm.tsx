@@ -138,140 +138,109 @@ export const TaskForm = ({ onTaskAdded, onClose }: TaskFormProps) => {
     }
   }
 
-  return (
-    <form onSubmit={handleSubmit} className="p-6 space-y-4">
-      <h2 className="text-lg font-semibold text-gray-800">Nueva Tarea</h2>
+  const inputClass = "w-full bg-surface border border-border rounded-2xl px-4 py-3 text-sm text-text placeholder-text-dim focus:outline-none focus:border-primary/60 focus:shadow-[0_0_0_3px_rgba(124,92,252,0.1)] transition-all"
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <div className="flex flex-col gap-1 md:col-span-2">
-          <label htmlFor="tarea" className="text-sm font-medium text-gray-700">
-            Tarea
-          </label>
+  return (
+    <form onSubmit={handleSubmit} className="p-8 space-y-6">
+      <div>
+        <h2 className="text-2xl font-bold text-text">Nueva Tarea</h2>
+        <p className="text-sm text-text-dim mt-2">Registra una nueva tarea en el sistema.</p>
+      </div>
+
+      <div className="space-y-5">
+        <div className="flex flex-col gap-2">
+          <label htmlFor="tarea" className="text-sm font-medium text-text-secondary">Tarea</label>
           <textarea
             id="tarea"
             name="tarea"
             value={formData.tarea}
             onChange={handleChange}
-            placeholder="Descripción de la tarea"
+            placeholder="Descripción de la tarea..."
             rows={3}
-            className="border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-y"
+            className={`${inputClass} resize-y`}
           />
-          {errors.tarea && <span className="text-xs text-red-600">{errors.tarea}</span>}
+          {errors.tarea && <span className="text-xs text-danger">{errors.tarea}</span>}
         </div>
 
-        <div className="flex flex-col gap-1">
-          <label htmlFor="proyecto" className="text-sm font-medium text-gray-700">
-            Proyecto
-          </label>
-          <select
-            id="proyecto"
-            name="proyecto"
-            value={formData.proyecto}
-            onChange={handleChange}
-            className="border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white"
-          >
-            <option value="">Seleccione un proyecto</option>
-            {proyectos.map((p) => (
-              <option key={p.id} value={p.nombre}>
-                {p.nombre}
-              </option>
-            ))}
-          </select>
-          {errors.proyecto && <span className="text-xs text-red-600">{errors.proyecto}</span>}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="flex flex-col gap-2">
+            <label htmlFor="proyecto" className="text-sm font-medium text-text-secondary">Proyecto</label>
+            <select id="proyecto" name="proyecto" value={formData.proyecto} onChange={handleChange} className={inputClass}>
+              <option value="">Seleccione</option>
+              {proyectos.map((p) => (
+                <option key={p.id} value={p.nombre}>{p.nombre}</option>
+              ))}
+            </select>
+            {errors.proyecto && <span className="text-xs text-danger">{errors.proyecto}</span>}
+          </div>
+
+          <div className="flex flex-col gap-2">
+            <label htmlFor="estado" className="text-sm font-medium text-text-secondary">Estado</label>
+            <select id="estado" name="estado" value={formData.estado} onChange={handleChange} className={inputClass}>
+              <option value="">Seleccione</option>
+              {estados.map((estado) => (
+                <option key={estado.id} value={estado.nombre}>{estado.nombre}</option>
+              ))}
+            </select>
+            {errors.estado && <span className="text-xs text-danger">{errors.estado}</span>}
+          </div>
+
+          <div className="flex flex-col gap-2">
+            <label htmlFor="fechaInicio" className="text-sm font-medium text-text-secondary">Fecha Inicio</label>
+            <input type="date" id="fechaInicio" name="fechaInicio" value={formData.fechaInicio} onChange={handleChange} className={inputClass} />
+            {errors.fechaInicio && <span className="text-xs text-danger">{errors.fechaInicio}</span>}
+          </div>
+
+          <div className="flex flex-col gap-2">
+            <label htmlFor="fechaTermino" className="text-sm font-medium text-text-secondary">Fecha Término</label>
+            <input type="date" id="fechaTermino" name="fechaTermino" value={formData.fechaTermino} onChange={handleChange} min={formData.fechaInicio || undefined} className={inputClass} />
+            {errors.fechaTermino && <span className="text-xs text-danger">{errors.fechaTermino}</span>}
+          </div>
         </div>
 
-        <div className="flex flex-col gap-1">
-          <label htmlFor="estado" className="text-sm font-medium text-gray-700">
-            Estado
-          </label>
-          <select
-            id="estado"
-            name="estado"
-            value={formData.estado}
-            onChange={handleChange}
-            className="border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white"
-          >
-            <option value="">Seleccione un estado</option>
-            {estados.map((estado) => (
-              <option key={estado.id} value={estado.nombre}>
-                {estado.nombre}
-              </option>
-            ))}
-          </select>
-          {errors.estado && <span className="text-xs text-red-600">{errors.estado}</span>}
-        </div>
-
-        <div className="flex flex-col gap-1">
-          <label htmlFor="fechaInicio" className="text-sm font-medium text-gray-700">
-            Fecha de Inicio
-          </label>
-          <input
-            type="date"
-            id="fechaInicio"
-            name="fechaInicio"
-            value={formData.fechaInicio}
-            onChange={handleChange}
-            className="border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-          />
-          {errors.fechaInicio && <span className="text-xs text-red-600">{errors.fechaInicio}</span>}
-        </div>
-
-        <div className="flex flex-col gap-1">
-          <label htmlFor="fechaTermino" className="text-sm font-medium text-gray-700">
-            Fecha de Término
-          </label>
-          <input
-            type="date"
-            id="fechaTermino"
-            name="fechaTermino"
-            value={formData.fechaTermino}
-            onChange={handleChange}
-            min={formData.fechaInicio || undefined}
-            className="border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-          />
-          {errors.fechaTermino && <span className="text-xs text-red-600">{errors.fechaTermino}</span>}
-        </div>
-
-        <div className="flex flex-col gap-1 md:col-span-2">
-          <label className="text-sm font-medium text-gray-700">
-            Repositorios
-          </label>
-          <div className="border border-gray-300 rounded-md p-3 space-y-2 max-h-32 overflow-y-auto">
+        <div className="flex flex-col gap-2">
+          <label className="text-sm font-medium text-text-secondary">Repositorios</label>
+          <div className="bg-surface border border-border rounded-2xl p-4 space-y-1 max-h-36 overflow-y-auto">
             {repositorios.length === 0 && (
-              <span className="text-xs text-gray-400">Cargando repositorios...</span>
+              <span className="text-xs text-text-dim">Cargando...</span>
             )}
             {repositorios.map((r) => (
-              <label key={r.id} className="flex items-center gap-2 text-sm text-gray-700 cursor-pointer">
+              <label key={r.id} className="flex items-center gap-3 text-sm text-text-secondary cursor-pointer hover:bg-surface-hover rounded-xl px-3 py-2.5 transition-colors">
                 <input
                   type="checkbox"
                   checked={formData.repositorios.includes(r.nombre)}
                   onChange={() => handleRepoToggle(r.nombre)}
-                  className="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+                  className="rounded-md border-border text-primary focus:ring-primary/30 bg-bg"
                 />
                 {r.nombre}
               </label>
             ))}
           </div>
           {formData.repositorios.length > 0 && (
-            <span className="text-xs text-gray-500">
-              Seleccionados: {formData.repositorios.join(' / ')}
-            </span>
+            <div className="flex flex-wrap gap-2 mt-2">
+              {formData.repositorios.map((repo) => (
+                <span key={repo} className="inline-flex items-center gap-1.5 bg-primary/10 text-primary-light text-xs px-3 py-1.5 rounded-full font-medium border border-primary/20">
+                  {repo}
+                  <button type="button" onClick={() => handleRepoToggle(repo)} className="hover:text-danger cursor-pointer text-base leading-none">×</button>
+                </span>
+              ))}
+            </div>
           )}
-          {errors.repositorios && <span className="text-xs text-red-600">{errors.repositorios}</span>}
+          {errors.repositorios && <span className="text-xs text-danger">{errors.repositorios}</span>}
         </div>
       </div>
 
-      <div className="pt-2 flex gap-3">
+      <div className="pt-4 flex gap-3">
         <button
           type="submit"
-          className="bg-blue-600 text-white px-5 py-2 rounded-md text-sm font-medium hover:bg-blue-700 transition-colors cursor-pointer"
+          className="bg-primary text-white px-7 py-3 rounded-full text-sm font-semibold hover:bg-primary-dark transition-all cursor-pointer"
         >
           Guardar Tarea
         </button>
         <button
           type="button"
           onClick={onClose}
-          className="border border-gray-300 text-gray-700 px-5 py-2 rounded-md text-sm font-medium hover:bg-gray-50 transition-colors cursor-pointer"
+          className="border border-border text-text-secondary px-7 py-3 rounded-full text-sm font-medium hover:bg-surface-hover transition-all cursor-pointer"
         >
           Cancelar
         </button>
